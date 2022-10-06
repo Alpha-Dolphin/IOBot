@@ -22,16 +22,16 @@ async def on_ready():
 async def on_member_join(member):
     await member.create_dm()
     await member.dm_channel.send(
-        f'Oi cunt {member.name}, welcome to this shithole'
+        f'Hey {member.name}, welcome to the server'
     )
 
 @bot.command(name='Speak', help='Gives you a friendly greeting!')
 async def speak_command(ctx):
     bot_responses = [
-        'No',
-        'Fuck you',
-        'Eat shit',
-        'Shut up cunt'
+        'Hi',
+        'Hello there',
+        'What\'s up',
+        'Hey!'
     ]
     response = random.choice(bot_responses)
     await ctx.send(response)
@@ -105,7 +105,7 @@ async def points_change(message, points):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('You can\'t do that dumbass.')
+        await ctx.send('You can\'t do that.')
 
 #Anonymously messages another user
 @bot.command(name='message', help="""Anonymously messages another user - <@ID>""")
