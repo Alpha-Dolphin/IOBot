@@ -12,7 +12,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 INTENTS = discord.Intents().none()
 
-bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = intents)
+bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
 @bot.event
 async def on_ready():
