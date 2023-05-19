@@ -10,7 +10,7 @@ import discord
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-intents = discord.Intents().none()
+INTENTS = discord.Intents().none()
 
 bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = intents)
 
