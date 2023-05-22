@@ -12,8 +12,9 @@ import json
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 INTENTS = discord.Intents().default()
+INTENTS.messages = True
 
-bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
+bot = commands.Bot(command_prefix='!', case_insensitive=True, intents = INTENTS)
 
 @bot.event
 async def on_ready():
@@ -76,24 +77,27 @@ async def password_command(ctx, len = '-1'):
 async def invalid_arg_error(ctx):
     await ctx.send("Invalid args")
 
-#Social credit addition/deduction function
 @bot.event
 async def on_message(message):
+    await socialCredit(message)
+
+#Social credit addition/deduction function
+async def socialCredit(message) :
     respond = random.randint(0,100)
-    if not (message.author.bot or respond):
+    if not (message.author.bot):
         credit = random.randint(0,1)
         points = random.randint(1,10)
         if credit >= 1:
             await message.channel.send(f"The CCP is most happy with your message! They give you {points} social credits")
-            await points_change(message, points)
+            await pointsChange(message, points)
         else:
             await message.channel.send(f"Your actions have displeased the CCP! You have lost {points} social credits")
-            await points_change(message, 0 - points)
+            await pointsChange(message, 0 - points)
     await bot.process_commands(message)
 
 #Social credit point scoring function
 @bot.event
-async def points_change(message, points):
+async def pointsChange(message, points):
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
     with open(file_path, "r") as file:
         existing_data = json.load(file)
