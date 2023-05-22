@@ -80,7 +80,7 @@ async def invalid_arg_error(ctx):
 @bot.event
 async def on_message(message):
     respond = random.randint(0,100)
-    if not (message.author.bot):
+    if not (message.author.bot or respond):
         credit = random.randint(0,1)
         points = random.randint(1,10)
         if credit >= 1:
