@@ -7,10 +7,11 @@ import random
 from dotenv import load_dotenv
 from discord.ext import commands
 import discord
+import json
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-INTENTS = discord.Intents().none()
+INTENTS = discord.Intents().default()
 
 bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
@@ -79,10 +80,10 @@ async def invalid_arg_error(ctx):
 @bot.event
 async def on_message(message):
     respond = random.randint(0,100)
-    if not (message.author.bot or respond):
-        credit = random.randint(0,10)
+    if not (message.author.bot):
+        credit = random.randint(0,1)
         points = random.randint(1,10)
-        if credit >= 5:
+        if credit >= 1:
             await message.channel.send(f"The CCP is most happy with your message! They give you {points} social credits")
             await points_change(message, points)
         else:
@@ -93,13 +94,21 @@ async def on_message(message):
 #Social credit point scoring function
 @bot.event
 async def points_change(message, points):
-        member = message.author.name
-        data_levels_new_member = {'credit': 0}
-        out_file = rf'{message.guild}\{message.author.id}.json'
-        logged_credits = data['credit']
-        logged_credits += points
-        data_levels_member = {'credit': logged_credits}
-        await message.channel.send(f"You now have {logged_credits} credits")
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
+    with open(file_path, "r") as file:
+        existing_data = json.load(file)
+    
+    author_id = str(message.author.id)
+
+    if author_id in existing_data:
+        existing_data[author_id]["credits"] += points
+    else:
+        existing_data[author_id] = {"credits": points}
+    
+    with open(file_path, "w") as file:
+        json.dump(existing_data, file)
+
+    await message.channel.send(f"You now have {existing_data[author_id]['credits']} credits")
 
 #General purpose invalid perms function
 @bot.event
