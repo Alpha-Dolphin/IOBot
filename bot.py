@@ -11,10 +11,10 @@ import json
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-INTENTS = discord.Intents().default()
+INTENTS = discord.Intents().all()
 INTENTS.messages = True
 
-bot = commands.Bot(command_prefix='!', case_insensitive=True, intents = INTENTS)
+bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
 @bot.event
 async def on_ready():
@@ -54,12 +54,12 @@ async def roll_command(ctx, number_of_dice = '-1', number_of_sides = '-1'):
 
 #Generates a cryptographically random password of length 4n in a string of length 5n-1
 @bot.command(name='password', help="""Generates a cryptographically random password of length 4n""")
-async def password_command(ctx, len = '-1'):
+async def password_command(ctx, length = '-1'):
     encrypt = random.SystemRandom()
     pw = ""
-    if (len.isnumeric() and int(len) > 0):
-        len = int(len)
-        for x in range(len * 5 - 1):
+    if (length.isnumeric() and int(length) > 0):
+        length = int(length)
+        for x in range(length * 5 - 1):
             if (x % 5 == 4):
                 pw += " "
             else:
@@ -84,7 +84,7 @@ async def on_message(message):
 #Social credit addition/deduction function
 async def socialCredit(message) :
     respond = random.randint(0,100)
-    if not (message.author.bot):
+    if not (message.author.bot or respond):
         credit = random.randint(0,1)
         points = random.randint(1,10)
         if credit >= 1:
