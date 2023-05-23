@@ -10,7 +10,7 @@ import discord
 import json
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = str(os.getenv('DISCORD_TOKEN'))
 INTENTS = discord.Intents().all()
 INTENTS.messages = True
 
@@ -101,18 +101,16 @@ async def pointsChange(message, points):
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
     with open(file_path, "r") as file:
         existing_data = json.load(file)
-    
-    author_id = str(message.author.id)
 
-    if author_id in existing_data:
-        existing_data[author_id]["credits"] += points
+    if message.author.id in existing_data:
+        existing_data[message.author.id]["credits"] += points
     else:
-        existing_data[author_id] = {"credits": points}
+        existing_data[message.author.id] = {"credits": points}
     
     with open(file_path, "w") as file:
         json.dump(existing_data, file)
 
-    await message.channel.send(f"You now have {existing_data[author_id]['credits']} credits")
+    await message.channel.send(f"You now have {existing_data[message.author.id]['credits']} credits")
 
 #General purpose invalid perms function
 @bot.event
