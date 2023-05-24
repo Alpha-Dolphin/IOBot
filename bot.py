@@ -82,6 +82,7 @@ async def invalid_arg_error(ctx):
 @bot.event
 async def on_message(message):
     if not (message.author.bot) :
+        await bot.process_commands(message)
         result = await analyze_sentiment(message)
         if result is not None:
             await socialCredit(message, result)
