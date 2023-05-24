@@ -14,6 +14,7 @@ load_dotenv()
 TOKEN = str(os.getenv('DISCORD_TOKEN'))
 INTENTS = discord.Intents().all()
 INTENTS.messages = True
+DEBUG = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't') #.env for booleans is buggy
 
 bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
@@ -87,9 +88,9 @@ async def on_message(message):
 
 #Social credit addition/deduction function
 async def socialCredit(message, struct) :
-    # print(struct['compound score'] > 0)
-    # print('negative' in struct['topic'])
-    # print(struct['compound score'] > 0) != ('negative' in struct['topic'])
+    if DEBUG : print(struct['compound score'] > 0)
+    if DEBUG : print('negative' in struct['topic'])
+    if DEBUG : print((struct['compound score'] > 0) != ('negative' in struct['topic']))
     if (struct['compound score'] > 0) != ('negative' in struct['topic']):
         if (struct['compound score'] * 10 > 7.5 ) : await message.channel.send(f"The CCP is most happy with your message! They give you {struct['compound score'] * 10} social credits")
         else : await message.channel.send(f"Your message appeases the CCP. They give you {struct['compound score'] * 10} social credits")
