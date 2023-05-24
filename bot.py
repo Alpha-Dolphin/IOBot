@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 import discord
 import json
+from sentiment import analyze_sentiment
 
 load_dotenv()
 TOKEN = str(os.getenv('DISCORD_TOKEN'))
@@ -79,21 +80,36 @@ async def invalid_arg_error(ctx):
 
 @bot.event
 async def on_message(message):
-    await socialCredit(message)
+    if not (message.author.bot) :
+        result = await analyze_sentiment(message)
+        if result is not None:
+            await socialCredit(message, result)
 
 #Social credit addition/deduction function
-async def socialCredit(message) :
-    respond = random.randint(0,100)
-    if not (message.author.bot or respond):
-        credit = random.randint(0,1)
-        points = random.randint(1,10)
-        if credit >= 1:
-            await message.channel.send(f"The CCP is most happy with your message! They give you {points} social credits")
-            await pointsChange(message, points)
-        else:
-            await message.channel.send(f"Your actions have displeased the CCP! You have lost {points} social credits")
-            await pointsChange(message, 0 - points)
-    await bot.process_commands(message)
+async def socialCredit(message, struct) :
+    # print(struct['compound score'] > 0)
+    # print('negative' in struct['topic'])
+    # print(struct['compound score'] > 0) != ('negative' in struct['topic'])
+    if (struct['compound score'] > 0) != ('negative' in struct['topic']):
+        if (struct['compound score'] * 10 > 7.5 ) : await message.channel.send(f"The CCP is most happy with your message! They give you {int(struct['compound score'] * 10)} social credits")
+        else : await message.channel.send(f"Your message appeases the CCP. They give you {int(struct['compound score'] * 10)} social credits")
+        await pointsChange(message, int(struct['compound score'] * 10))
+    else:
+        if (struct['compound score'] * 10 < -7.55 ) : await message.channel.send(f"Your actions have outraged the CCP! You have lost {abs(int(struct['compound score'] * 10))} social credits")
+        else: await message.channel.send(f"The CCP has noted your disobedience. You have lost {abs(int(struct['compound score'] * 10))} social credits")
+        await pointsChange(message, int(struct['compound score'] * 10))
+
+    # respond = random.randint(0,100)
+    # if not (message.author.bot or respond):
+    #     credit = random.randint(0,1)
+    #     points = random.randint(1,10)
+    #     if credit >= 1:
+    #         await message.channel.send(f"The CCP is most happy with your message! They give you {points} social credits")
+    #         await pointsChange(message, points)
+    #     else:
+    #         await message.channel.send(f"Your actions have displeased the CCP! You have lost {points} social credits")
+    #         await pointsChange(message, 0 - points)
+    # await bot.process_commands(message)
 
 #Social credit point scoring function
 @bot.event
@@ -101,16 +117,16 @@ async def pointsChange(message, points):
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
     with open(file_path, "r") as file:
         existing_data = json.load(file)
-
-    if message.author.id in existing_data:
-        existing_data[message.author.id]["credits"] += points
+    print(str(message.author.id) in existing_data)
+    if str(message.author.id) in existing_data:
+        existing_data[str(message.author.id)]["credits"] += points
     else:
-        existing_data[message.author.id] = {"credits": points}
+        existing_data[str(message.author.id)] = {"credits": points}
     
     with open(file_path, "w") as file:
         json.dump(existing_data, file)
 
-    await message.channel.send(f"You now have {existing_data[message.author.id]['credits']} credits")
+    await message.channel.send(f"You now have {existing_data[str(message.author.id)]['credits']} credits")
 
 #General purpose invalid perms function
 @bot.event
