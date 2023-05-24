@@ -57,9 +57,11 @@ async def analyze_sentiment(message):
             print("Sentiment:", compound_score)
             print("Topics:", matching_topics)
             print("--------")
-            return {
-                'topic': matching_topics[0],
-                'compound score': compound_score
-            }
+            return (
+                {
+                    'topic': matching_topics[0],
+                    'compound score': compound_score
+                }
+            )
         else:
             return None
