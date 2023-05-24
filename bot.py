@@ -86,7 +86,7 @@ async def on_message(message):
         if result is not None:
             await socialCredit(message, result)
 
-#Social credit addition/deduction function
+#Social credit output message function
 async def socialCredit(message, struct) :
     if DEBUG : print(struct['compound score'] > 0)
     if DEBUG : print('negative' in struct['topic'])
@@ -112,7 +112,7 @@ async def socialCredit(message, struct) :
     #         await pointsChange(message, 0 - points)
     # await bot.process_commands(message)
 
-#Social credit point scoring function
+#Social credit update function
 @bot.event
 async def pointsChange(message, points):
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")

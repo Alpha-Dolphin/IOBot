@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 from gensim import corpora, models
 from CCPDict import Terms
 
+#Sentiment analysis function
 async def analyze_sentiment(message):
     
     # Prepare text
