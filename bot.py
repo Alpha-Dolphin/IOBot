@@ -88,18 +88,18 @@ async def on_message(message):
             await socialCredit(message, result)
 
 #Social credit output message function
-async def socialCredit(message, struct) :
-    if DEBUG : print(struct['compound score'] > 0)
-    if DEBUG : print('negative' in struct['topic'])
-    if DEBUG : print((struct['compound score'] > 0) != ('negative' in struct['topic']))
-    if (struct['compound score'] > 0) != ('negative' in struct['topic']):
-        if (struct['compound score'] * 10 > 7.5 ) : await message.channel.send(f"The CCP is most happy with your message! They give you {struct['compound score'] * 10} social credits")
-        else : await message.channel.send(f"Your message appeases the CCP. They give you {struct['compound score'] * 10} social credits")
-        await pointsChange(message, struct['compound score'] * 10)
+async def socialCredit(message, tuple) :
+    if DEBUG : print(tuple['compound score'] > 0)
+    if DEBUG : print('negative' in tuple['topic'])
+    if DEBUG : print((tuple['compound score'] > 0) != ('negative' in tuple['topic']))
+    if (tuple['compound score'] > 0) != ('negative' in tuple['topic']):
+        if (tuple['compound score'] * 10 > 7.5 ) : await message.channel.send(f"The CCP is most happy with your message! They give you {tuple['compound score'] * 10} social credits")
+        else : await message.channel.send(f"Your message appeases the CCP. They give you {tuple['compound score'] * 10} social credits")
+        await pointsChange(message, tuple['compound score'] * 10)
     else:
-        if (struct['compound score'] * 10 < -7.5 ) : await message.channel.send(f"Your actions have outraged the CCP! You have lost {abs(struct['compound score'] * 10)} social credits")
-        else: await message.channel.send(f"The CCP has noted your disobedience. You have lost {abs(struct['compound score'] * 10)} social credits")
-        await pointsChange(message, struct['compound score'] * 10)
+        if (tuple['compound score'] * 10 < -7.5 ) : await message.channel.send(f"Your actions have outraged the CCP! You have lost {abs(tuple['compound score'] * 10)} social credits")
+        else: await message.channel.send(f"The CCP has noted your disobedience. You have lost {abs(tuple['compound score'] * 10)} social credits")
+        await pointsChange(message, tuple['compound score'] * 10)
 
     # respond = random.randint(0,100)
     # if not (message.author.bot or respond):
