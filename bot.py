@@ -144,6 +144,5 @@ async def dm(ctx, user: discord.User, *message):
 
 bot.run(TOKEN)
 
-#TODO: Social credit leaderboard
+#TODO: Social credit depth
 #   Multi dice roll?
-#   Social credit for server boosting
