@@ -19,18 +19,18 @@ DEBUG = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't') #.env for bool
 bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
 @bot.event
-async def on_ready():
+async def on_ready() :
     print(f'{bot.user.name} is online')
 
 @bot.event
-async def on_member_join(member):
+async def on_member_join(member) :
     await member.create_dm()
     await member.dm_channel.send(
         f'Hey {member.name}, welcome to the server'
     )
 
 @bot.command(name='Speak', help='Gives you a friendly greeting!')
-async def speak_command(ctx):
+async def speak_command(ctx) :
     bot_responses = [
         'Hi',
         'Hello there',
@@ -42,9 +42,9 @@ async def speak_command(ctx):
 
 #Roll a die of side foo, bar times
 @bot.command(name='roll', help="""1st param = sides of dice 2nd param = number of dice""")
-async def roll_command(ctx, number_of_dice = '-1', number_of_sides = '-1'):
+async def roll_command(ctx, number_of_dice = '-1', number_of_sides = '-1') :
     if not (number_of_dice.isnumeric() and int(number_of_dice) > 0 
-    and number_of_sides.isnumeric() and int(number_of_sides) > 0): 
+    and number_of_sides.isnumeric() and int(number_of_sides) > 0) : 
         await invalid_arg_error(ctx)
     number_of_dice = int(number_of_dice)
     number_of_sides = int(number_of_sides)
@@ -56,17 +56,17 @@ async def roll_command(ctx, number_of_dice = '-1', number_of_sides = '-1'):
 
 #Generates a cryptographically random password of length 4n in a string of length 5n-1
 @bot.command(name='password', help="""Generates a cryptographically random password of length 4n""")
-async def password_command(ctx, length = '-1'):
+async def password_command(ctx, length = '-1') :
     encrypt = random.SystemRandom()
     pw = ""
-    if (length.isnumeric() and int(length) > 0):
+    if (length.isnumeric() and int(length) > 0) :
         length = int(length)
-        for x in range(length * 5 - 1):
-            if (x % 5 == 4):
+        for x in range(length * 5 - 1) :
+            if (x % 5 == 4) :
                 pw += " "
             else:
                 numOrLetter = encrypt.randint(0,1)
-                if (numOrLetter):
+                if (numOrLetter) :
                     pw += chr(encrypt.randint(65,122))
                 else:
                     pw += chr(encrypt.randint(33, 64))
@@ -76,11 +76,11 @@ async def password_command(ctx, length = '-1'):
 
 #General purpose invalid args function
 @bot.event
-async def invalid_arg_error(ctx):
+async def invalid_arg_error(ctx) :
     await ctx.send("Invalid args")
 
 @bot.event
-async def on_message(message):
+async def on_message(message) :
     if not (message.author.bot) :
         await bot.process_commands(message)
         result = await analyze_sentiment(message)
@@ -92,17 +92,17 @@ async def socialCredit(message, tuple) :
     if DEBUG : print(tuple['compound score'] > 0)
     if DEBUG : print('negative' in tuple['topic'])
     if DEBUG : print((tuple['compound score'] > 0) != ('negative' in tuple['topic']))
-    if (tuple['compound score'] > 0) != ('negative' in tuple['topic']):
+    if (tuple['compound score'] > 0) != ('negative' in tuple['topic']) :
         if (tuple['compound score'] * 10 > 7.5 ) : await message.channel.send(f"The CCP is most happy with your message! They give you {tuple['compound score'] * 10} social credits")
         else : await message.channel.send(f"Your message appeases the CCP. They give you {tuple['compound score'] * 10} social credits")
         await pointsChange(message, tuple['compound score'] * 10)
     else:
         if (tuple['compound score'] * 10 < -7.5 ) : await message.channel.send(f"Your actions have outraged the CCP! You have lost {abs(tuple['compound score'] * 10)} social credits")
-        else: await message.channel.send(f"The CCP has noted your disobedience. You have lost {abs(tuple['compound score'] * 10)} social credits")
+        else : await message.channel.send(f"The CCP has noted your disobedience. You have lost {abs(tuple['compound score'] * 10)} social credits")
         await pointsChange(message, tuple['compound score'] * 10)
 
     # respond = random.randint(0,100)
-    # if not (message.author.bot or respond):
+    # if not (message.author.bot or respond) :
     #     credit = random.randint(0,1)
     #     points = random.randint(1,10)
     #     if credit >= 1:
@@ -115,7 +115,7 @@ async def socialCredit(message, tuple) :
 
 #Social credit update function
 @bot.event
-async def pointsChange(message, points):
+async def pointsChange(message, points) :
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
     with open(file_path, "r") as file:
         existing_data = json.load(file)
@@ -132,13 +132,13 @@ async def pointsChange(message, points):
 
 #General purpose invalid perms function
 @bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CheckFailure):
+async def on_command_error(ctx, error) :
+    if isinstance(error, commands.errors.CheckFailure) :
         await ctx.send('You can\'t do that.')
 
 #Anonymously messages another user
 @bot.command(name='message', help="""Anonymously messages another user - <@ID>""")
-async def dm(ctx, user: discord.User, *message):
+async def dm(ctx, user: discord.User, *message) :
     await user.send("You have an anonymous message:")
     await user.send(" ".join(message[:]))
 
