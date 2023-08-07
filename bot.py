@@ -119,7 +119,7 @@ async def pointsChange(message, points) :
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_data.json")
     with open(file_path, "r") as file:
         existing_data = json.load(file)
-    print(str(message.author.id) in existing_data)
+    if DEBUG : print(str(message.author.id) in existing_data)
     if str(message.author.id) in existing_data:
         existing_data[str(message.author.id)]["credits"] += points
     else:
