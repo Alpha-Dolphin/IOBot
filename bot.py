@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix='>', case_insensitive=True, intents = INTENTS)
 
 @bot.event
 async def on_ready() :
-    print(f'{bot.user.name} is online')
+    if (bot.user != None) : print(f'{bot.user.name} is online')
 
 @bot.event
 async def on_member_join(member) :
